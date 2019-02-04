@@ -34,11 +34,17 @@ public class MainActivity extends Activity {
 	
 	private final class ChoiceTouchListener implements OnTouchListener {
 		public boolean onTouch(View view, MotionEvent event) {
+			//get raw x and y of event
 			final int X = (int) event.getRawX();
 			final int Y = (int) event.getRawY();
+
+			// get action type and use bitwise to mask it (remove unwanted crap)
 			switch (event.getAction() & MotionEvent.ACTION_MASK) {
+				//action down is when touch first recognised
 			case MotionEvent.ACTION_DOWN:
 				RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+				//calculate position of x and y relative to top margin and left margin of layout
 				_xDelta = X - lParams.leftMargin;
 				_yDelta = Y - lParams.topMargin;
 				break;
@@ -49,16 +55,25 @@ public class MainActivity extends Activity {
 			case MotionEvent.ACTION_POINTER_UP:
 				break;
 			case MotionEvent.ACTION_MOVE:
-				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
-						.getLayoutParams();
+				// retrieve layout params from view
+				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+				// set layoutparams left and top margins to new values relative to x
 				layoutParams.leftMargin = X - _xDelta;
 				layoutParams.topMargin = Y - _yDelta;
+
+				// not sure why 250 every time, perhaps size of image? (though looks too small)
 				layoutParams.rightMargin = -250;
 				layoutParams.bottomMargin = -250;
+
+				// write new layout params back to the file
 				view.setLayoutParams(layoutParams);
 				break;
 			}
+			// invalidate layout at end to cause redraw
 			rootLayout.invalidate();
+
+			// return true here, just because i guess???
 			return true;
 		}
 	}
