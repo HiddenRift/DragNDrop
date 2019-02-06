@@ -2,6 +2,7 @@ package com.delaroystudios.dragndrop;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.skholingua.android.dragndrop_relativelayout.R;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends Activity {
 
@@ -47,6 +50,12 @@ public class MainActivity extends Activity {
 				//calculate position of x and y relative to top margin and left margin of layout
 				_xDelta = X - lParams.leftMargin;
 				_yDelta = Y - lParams.topMargin;
+                Log.d("ACTIONDOWN", "X: " + X);
+                Log.d("ACTIONDOWN", "Y: " + Y);
+                Log.d("ACTIONDOWN", "leftMgn: " + lParams.leftMargin);
+                Log.d("ACTIONDOWN", "topMgn: " + lParams.topMargin);
+                Log.d("ACTIONDOWN", "X_Delt: " + _xDelta);
+                Log.d("ACTIONDOWN", "Y_Delt: " + _yDelta);
 				break;
 			case MotionEvent.ACTION_UP:
 				break;
@@ -56,15 +65,26 @@ public class MainActivity extends Activity {
 				break;
 			case MotionEvent.ACTION_MOVE:
 				// retrieve layout params from view
+
+                Log.d("ACTIONMove", "begin out...");
+                Log.d("ACTIONMove", "X: " + (X-_xDelta));
+                Log.d("ACTIONMove", "Y: " + (Y-_yDelta));
 				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
-				// set layoutparams left and top margins to new values relative to x
+				//set layoutparams left and top margins to new values relative to x
+
+                //                    Previous value of...
+                // so overall its X - (X-leftMargin)
+                // from experimenting this may have something to do with maintaining a grab of the
+                // object by adjusting the end position relative to part touched???
 				layoutParams.leftMargin = X - _xDelta;
 				layoutParams.topMargin = Y - _yDelta;
 
 				// not sure why 250 every time, perhaps size of image? (though looks too small)
+                //having this uncommented will prevent the icon from becoming smaller as it nears edge to prevent it falling off
 				layoutParams.rightMargin = -250;
 				layoutParams.bottomMargin = -250;
+
 
 				// write new layout params back to the file
 				view.setLayoutParams(layoutParams);
